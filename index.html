@@ -43,25 +43,21 @@ const display = document.querySelector(".display");
 const buttons = document.querySelectorAll("button");
 let input = "";
 let operatorUsed = false; // Untuk memeriksa apakah operator telah digunakan
-// let decimalUsed = false; // Untuk memeriksa apakah titik desimal telah digunakan
 let resultDisplayed = false; // Untuk memeriksa apakah hasil ditampilkan
 
 // Format angka dengan pemisah ribuan
 const formatNumber = (num) => {
     let [integer, decimal] = num.toString().split('.');
-    // Menambahkan titik sebagai pemisah ribuan
     integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return decimal ? `${integer}.${decimal}` : integer;
 };
 
 // Hapus pemisah ribuan untuk perhitungan
-const removeThousandSeparators = (num) => {
-    return num.replace(/\./g, '');
-};
+const removeThousandSeparators = (num) => num.replace(/\./g, '');
 
 // Update display setelah setiap input
 const updateDisplay = () => {
-    display.value = formatNumber(input); // Menampilkan angka dengan pemisah ribuan
+    display.value = formatNumber(input);
 };
 
 // Tangani klik tombol
@@ -73,7 +69,6 @@ buttons.forEach(button => {
             // Reset kalkulator
             input = "";
             operatorUsed = false;
-            decimalUsed = false;
             resultDisplayed = false;
             updateDisplay();
             return;
@@ -82,9 +77,6 @@ buttons.forEach(button => {
         if (value === "DEL") {
             // Hapus satu karakter terakhir
             input = input.slice(0, -1);
-            if (input.includes(".")) {
-                decimalUsed = true;
-            }
             operatorUsed = false;
             updateDisplay();
             return;
@@ -92,19 +84,11 @@ buttons.forEach(button => {
 
         if (value === "=") {
             // Evaluasi ekspresi dan tampilkan hasil
-            let calcInput = removeThousandSeparators(input); // Hapus pemisah ribuan sebelum menghitung
+            let calcInput = removeThousandSeparators(input);
 
             try {
                 let result = eval(calcInput);
-                input = result.toString();
-
-                // Jika hasilnya desimal, pastikan desimal tetap ada jika perlu
-                if (result % 1 === 0) {
-                    input = result.toString(); // Bilangan bulat tanpa desimal
-                } else {
-                    input = result.toFixed(10).replace(/(\.\d+?)0+$/, '$1'); // Format agar desimal tetap ada
-                }
-
+                input = result % 1 === 0 ? result.toString() : result.toFixed(10).replace(/(\.\d+?)0+$/, '$1');
                 updateDisplay();
                 resultDisplayed = true;
             } catch (error) {
@@ -114,36 +98,32 @@ buttons.forEach(button => {
             }
 
             operatorUsed = false;
-            decimalUsed = false;
             return;
         }
 
         if (["+", "-", "*", "/"].includes(value)) {
             // Mencegah dua operator berturut-turut
             if (operatorUsed) return;
-            if (input === "" && value !== "-") return; // Mencegah memulai dengan operator kecuali minus
+            if (input === "" && value !== "-") return;
 
             input += value;
             operatorUsed = true;
-            decimalUsed = false; // Reset penggunaan desimal setelah operator
+            resultDisplayed = false; // Reset hasil jika operator ditekan setelah =
             updateDisplay();
             return;
         }
 
-
-        // Jika hasil ditampilkan, reset input dan mulai dengan angka baru
-        if (resultDisplayed) {
+        // Jika hasil ditampilkan, reset hanya jika angka ditekan setelah "="
+        if (resultDisplayed && !["+", "-", "*", "/"].includes(value)) {
             input = "";
-            resultDisplayed = false;
         }
 
+        resultDisplayed = false;
         input += value;
-        operatorUsed = false; // Reset penggunaan operator setelah menambahkan angka
+        operatorUsed = false;
         updateDisplay();
     });
 });
-
-
     </script>
 </body>
 </html>
