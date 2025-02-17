@@ -102,17 +102,16 @@ buttons.forEach(button => {
         }
 
         if (["+", "-", "*", "/"].includes(value)) {
-            // Mencegah dua operator berturut-turut
-            if (operatorUsed) return;
-            if (input === "" && value !== "-") return;
-
+            // Mencegah dua operator berturut-turut, kecuali jika operator pertama adalah minus
+            if (operatorUsed && value !== "-") return;
+            if (input === "" && value !== "-") return; // Mencegah memulai dengan operator selain minus
+        
             input += value;
             operatorUsed = true;
             resultDisplayed = false; // Reset hasil jika operator ditekan setelah =
             updateDisplay();
             return;
         }
-
         // Jika hasil ditampilkan, reset hanya jika angka ditekan setelah "="
         if (resultDisplayed && !["+", "-", "*", "/"].includes(value)) {
             input = "";
