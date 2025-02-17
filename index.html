@@ -100,8 +100,7 @@ buttons.forEach(button => {
             operatorUsed = false;
             return;
         }
-
-        if (["+", "-", "*", "/"].includes(value)) {
+if (["+", "-", "*", "/"].includes(value)) {
     // Mencegah dua operator berturut-turut kecuali minus setelah angka
     if (operatorUsed && value !== "-") return;
 
@@ -113,21 +112,11 @@ buttons.forEach(button => {
         return;
     }
 
-    // Mencegah penggunaan dua minus berturut-turut
+    // Mencegah dua minus berturut-turut
     if (value === "-" && input[input.length - 1] === "-") return;
 
-    // Mencegah penggunaan minus setelah angka negatif (misalnya -9--9)
-    if (value === "-" && (input === "" || ["+", "-", "*", "/"].includes(input[input.length - 1]))) {
-        return;
-    }
-
-    // Menambahkan operator ke input
-    input += value;
-    operatorUsed = true;
-    resultDisplayed = false; // Reset hasil jika operator ditekan setelah "="
-    updateDisplay();
-    return;
-}
+    // Mencegah penggunaan minus setelah operator lain atau setelah angka negatif
+    if (value === "-" && ["+", "*", "/", undefined].includes(input[input.length - 1])) return;
         
             // Pastikan operator lain tidak digunakan berturut-turut
             input += value;
