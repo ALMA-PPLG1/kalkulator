@@ -102,8 +102,12 @@ buttons.forEach(button => {
         }
 
         if (["+", "-", "*", "/"].includes(value)) {
-            // Mencegah dua operator berturut-turut, kecuali jika operator pertama adalah minus
+            // Mencegah dua operator berturut-turut (termasuk minus)
             if (operatorUsed && value !== "-") return;
+        
+            // Mencegah dua minus berturut-turut
+            if (value === "-" && operatorUsed) return;
+        
             if (input === "" && value !== "-") return; // Mencegah memulai dengan operator selain minus
         
             input += value;
