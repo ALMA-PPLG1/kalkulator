@@ -102,16 +102,32 @@ buttons.forEach(button => {
         }
 
         if (["+", "-", "*", "/"].includes(value)) {
-            // Mencegah dua operator berturut-turut selain minus
-            if (operatorUsed && value !== "-") return;
-        
-            // Jika input kosong dan value minus, maka minus bisa digunakan untuk memulai ekspresi
-            if (input === "" && value === "-") {
-                input += value;
-                operatorUsed = true;
-                updateDisplay();
-                return;
-            }
+    // Mencegah dua operator berturut-turut kecuali minus setelah angka
+    if (operatorUsed && value !== "-") return;
+
+    // Jika input kosong, minus bisa digunakan untuk memulai ekspresi angka negatif
+    if (input === "" && value === "-") {
+        input += value;
+        operatorUsed = true;
+        updateDisplay();
+        return;
+    }
+
+    // Mencegah penggunaan dua minus berturut-turut
+    if (value === "-" && input[input.length - 1] === "-") return;
+
+    // Mencegah penggunaan minus setelah angka negatif (misalnya -9--9)
+    if (value === "-" && (input === "" || ["+", "-", "*", "/"].includes(input[input.length - 1]))) {
+        return;
+    }
+
+    // Menambahkan operator ke input
+    input += value;
+    operatorUsed = true;
+    resultDisplayed = false; // Reset hasil jika operator ditekan setelah "="
+    updateDisplay();
+    return;
+}
         
             // Pastikan operator lain tidak digunakan berturut-turut
             input += value;
